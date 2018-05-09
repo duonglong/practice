@@ -39,11 +39,12 @@ def solve(n, i):
             return 1
         else:
             return 2
-    if int(n[i]+n[i+1]) > 26:
+    if int(n[i]+n[i+1]) > 26 or int(n[i]) == 0:
         return solve(n, i + 1)
     return solve(n, i + 1) + solve(n, i + 2)
 
 
+print solve('0', 0)
 print solve('25114', 0)
 print solve('1111111111', 0)
 print solve('3333333333', 0)
