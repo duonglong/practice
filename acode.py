@@ -32,6 +32,8 @@ Output:
 
 
 def solve(n, i):
+    if int(n) == 0:
+        return 0
     if i == len(n) - 1:
         return 1
     if i == len(n) - 2:
