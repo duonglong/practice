@@ -37,7 +37,7 @@ def solve(n, i):
     if i == len(n) - 1:
         return 1
     if i == len(n) - 2:
-        if int(n[i:]) > 26:
+        if int(n[i:]) > 26 or int(n[i+1]) == 0:
             return 1
         else:
             return 2
@@ -47,6 +47,8 @@ def solve(n, i):
 
 
 print solve('0', 0)
+print solve('10', 0)
+print solve('101', 0)
 print solve('25114', 0)
 print solve('1111111111', 0)
 print solve('3333333333', 0)
