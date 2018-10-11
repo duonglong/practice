@@ -34,11 +34,12 @@ map = {x - 64: chr(x) for x in range(65, 91)}
 
 
 def solve(n):
-    s = str(n)
-    if len(s) < 1 or n > 26:
+    if n > 26:
         return 0
-    if len(s) == 1:
+    if 1 <= n <= 9:
         return 1
-    return 2 * solve(int(s[1:]))
+    solve(n/10)
 
 print solve(25114)
+# print solve(1111111111)
+# print solve(333333333333)
