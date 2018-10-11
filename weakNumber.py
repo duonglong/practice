@@ -40,8 +40,6 @@ Array of two elements: the weakness of the weakest number, and the number of int
 """
 
 def weakNumbers(n):
-    d, w = 0, 0
-    for i in range(1, n+1):
-        pass
+    pass
 
 

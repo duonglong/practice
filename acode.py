@@ -30,16 +30,25 @@ Output:
 1
 """
 
-map = {x - 64: chr(x) for x in range(65, 91)}
 
-
-def solve(n):
-    if n > 26:
+def solve(n, i):
+    if int(n) == 0:
         return 0
-    if 1 <= n <= 9:
+    if i == len(n) - 1:
         return 1
-    solve(n/10)
+    if i == len(n) - 2:
+        if int(n[i:]) > 26 or int(n[i+1]) == 0:
+            return 1
+        else:
+            return 2
+    if int(n[i]+n[i+1]) > 26 or int(n[i]) == 0:
+        return solve(n, i + 1)
+    return solve(n, i + 1) + solve(n, i + 2)
 
-print solve(25114)
-# print solve(1111111111)
-# print solve(333333333333)
+
+print solve('0', 0)
+print solve('10', 0)
+print solve('101', 0)
+print solve('25114', 0)
+print solve('1111111111', 0)
+print solve('3333333333', 0)
