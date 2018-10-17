@@ -4,6 +4,7 @@ import subprocess
 import argparse
 import time
 import logging
+import ConfigParser
 
 logging.basicConfig(format='[%(asctime)s]/%(levelname)s/%(name)s: %(message)s')
 logger = logging.getLogger("Baskin service")
@@ -35,11 +36,36 @@ def restart_service(args):
     if args.tool == 'tmux':
         tmux_restart(modules, args)
     elif args.tool == 'supervisor':
-        supervisorctl_restart(modules, args)
+        supervisor_restart(modules, args)
 
-def supervisorctl_restart(modules, args):
-    pass
 
+def get_restart_command(modules, args):
+    restart_command = [args.executable, '-c', args.config, '--load=web,web_kanban,connector']
+    if modules:
+        # Upgrade modules
+        restart_command.extend(['-u', ','.join(modules), '-d', args.database])
+
+    if args.database:
+        # Upgrade module for specify database
+        restart_command.extend(['-d', args.database])
+    return restart_command
+
+
+def supervisor_restart(modules, args):
+    assert not not args.supervisor_config, "Path To Supervisord Configuration wasn't supplied !"
+    p = ConfigParser.RawConfigParser()
+    # Load supervisorctl configuration file
+    p.read(args.supervisor_config)
+    restart_command = get_restart_command()
+    job_section = "program:%s" % args.branch
+    p.set(job_section, "command", restart_command)
+    with open(args.supervisor_config, "wb") as configfile:
+        p.write(configfile)
+    # Reload configuration file
+    subprocess.call(["supervisorctl", "reread"])
+    subprocess.call(["supervisorctl", "reload"])
+    # Restart service
+    subprocess.call(["supervisorctl", "restart", args.branch])
 
 def tmux_restart(modules, args):
     restart_command = [args.executable, '-c', args.config, '--load=web,web_kanban,connector']
@@ -52,6 +78,7 @@ def tmux_restart(modules, args):
     ])
 
     logger.info("Killing old tmux session ")
+    time.sleep(1)
     # Kill old tmux session
     subprocess.call([
         'tmux',
@@ -61,8 +88,11 @@ def tmux_restart(modules, args):
     ])
 
     # Restart service
-    if modules and args.database:
+    if modules:
         restart_command.extend(['-u', ','.join(modules), '-d', args.database])
+
+    if args.database:
+        restart_command.extend(['-d', args.database])
 
     logger.info("Starting service ...")
     # Create new session
@@ -140,6 +170,7 @@ def init_arguments():
     parser.add_argument('--path', help='Path to project', required=True)
     parser.add_argument('--branch', help='Branch name', required=True)
     parser.add_argument('--tool', help='Odoo Service management tool', default='tmux', choices=('tmux', 'supervisor', 'systemd'))
+    parser.add_argument('--supervisor_config', help='Path To Supervisord Configuration File')
     parser.add_argument('--executable', help='Path to odoo executable file', required=True)
     parser.add_argument('--config', help='Path to project config file', required=True)
     parser.add_argument('--database', help='Database name')
