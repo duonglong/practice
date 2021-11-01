@@ -1,15 +1,15 @@
+def cost(B):
+    print(B)
+    if len(B) == 2:
+        return max(B) - 1
+    c_next = cost(B[1:])
+    m = c_next if c_next > B[1] else B[1]
+    k = m if m > B[0] else B[0] - 1
+    print(c_next, m, k)
+    return c_next + k
 
-def getWays(n, c):
-    m = {k: 0 for k in range(n+1)}
-    m[0] = 1
-    for coin in c:
-        for i in range(1, n+1):
-            if coin <= i:
-                m.setdefault(i, 0)
-                m.setdefault(i - coin, 0)
-                m[i] += m[i - coin]
-    return m[n]
 
-n = 1
-c = [48, 6, 34, 50, 49, 36, 30, 35, 40, 41, 17, 43, 39, 13, 4, 20, 19, 2, 46, 7, 38, 33, 28, 18, 21]
-getWays(n, c)
+print(cost([10, 1, 10, 1]))
+# print(cost([5, 3, 2]))
+# print(cost([3,5,2]))
+# print(cost([100, 2, 100, 2, 100]))
