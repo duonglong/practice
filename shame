@@ -1,0 +1,245 @@
+
+Please note:
+Read the questions carefully. Every word is important.
+Feel free to add comments in your answers and read the documentation as you see fit.
+Don't forget to mention the language you are using.
+Do test your code!
+Between parenthesis is the weight of each question, the maximum score is 20
+
+
+Test 1: Any language (3/20)
+Write a program that outputs sequentially the integers from 1 to 99, but on some conditions prints a string instead:
+when the integer is a multiple of 3 print “Open” instead of the number,
+when it is a multiple of 7 print “Source” instead of the number,
+when it is a multiple of both 3 and 7 print “OpenSource” instead of the number.
+
+---------------------------------
+Python:
+
+def showNumber():
+    for x in range(1, 100):
+        if x % 3 == 0 and x % 7 == 0:
+            print "OpenSource"
+        elif x % 3 == 0:
+            print "Open"
+        elif x % 7 == 0:
+            print "Source"
+        else:
+            print x
+
+[juc] 3, ugly python2
+
+Test 2: Any language (3/20)
+Solve the game "Guess a number", find a secret integer between 1 and 1000000
+in less than 50 guesses. Write a function that solves the game without user input and returns the
+solution by using the function verify() which is defined with the following
+specification:
+function verify(guess: integer) -> integer
+Argument:
+     guess (integer) the number to verify
+Returns:
+     0 if the guess is the solution, your program won
+     -1 if the solution is smaller than the guess parameter
+     1  if the solution is bigger than the guess parameter
+
+Warning: You are not allowed to call verify() more that 50 times or you lose.
+
+--------------------------------
+Python:
+
+userInput = 42
+minRange = 1
+maxRange = 1000000
+
+def verify(guess):
+if guess == userInput:
+return 0
+elif guess < userInput:
+return 1
+elif guess > userInput:
+    return -1
+
+def findTheNumber(minR, maxR, guess):
+    middle = (minR + maxR) // 2
+    res = verify(middle)
+    if res == 0:
+        return guess
+    else:
+        if res == -1:
+            return findTheNumber(minR, middle, middle / 2)
+        elif res == 1:
+            return findTheNumber(middle, maxR)
+
+findTheNumber(minRange, maxRange, maxRange // 2)
+
+[juc] 0, erronous
+
+    return findTheNumber(middle, maxR)
+TypeError: findTheNumber() missing 1 required positional argument: 'guess'
+
+I actually finished this on my IDE but didn't manage to paste it here before the time end (though total time was 2h but actually is 1h45)
+--------------------------------------------
+userInput = 42 # random number here
+minRange = 1
+maxRange = 1000000
+
+def verify(guess):
+    if guess == userInput:
+        return 0
+    elif guess < userInput:
+        return 1
+    elif guess > userInput:
+        return -1
+
+def findTheNumber(minR, maxR):
+    middle = (minR + maxR) // 2
+    if middle + 1 != maxR:
+        middle += 1
+    if middle == maxRange - 1:
+   return maxRange
+    res = verify(middle)
+    if res == 0:
+        return middle
+    else:
+        if res == -1:
+            return findTheNumber(minR, middle)
+        elif res == 1:
+            return findTheNumber(middle, maxR)
+
+print findTheNumber(minRange, maxRange)
+
+
+Test 3: Any language (3/20)
+Write a function that takes a list of strings and returns the sum of the list items that represent an integer (skipping the other items)
+
+----------------------------
+Python:
+import re
+
+
+regex = '^-?[0-9]+$'
+
+def isInteger(str):
+if(re.search(regex, str)):
+return True
+else:
+return False
+
+def sumString(listString):
+    return sum([int(x) for x in listString if isInteger(x)])
+
+[juc] 3
+
+Test 4: Any language (1/20)
+Write a recursive version of the previous function (or an iterative version if you have already done a recursive version).
+----------------------------
+Python:
+import re
+
+
+regex = '^-?[0-9]+$'
+
+def isInteger(str):
+if(re.search(regex, str)):
+return True
+else:
+return False
+
+def sumString(listString):
+    if len(listString) == 0:
+        return 0
+x = listString.pop()
+if isInteger(x):
+return int(x) + sumString(listString)
+else:
+return sumString(listString)
+
+[juc] 1
+
+Test 5: SQL (3/20)
+Write pseudo-SQL statements to create database tables to store the products of a basic webshop. Each product has a name, a price, a creation date and may belong to several categories. Categories have a name and a flag to indicate whether the category is private or public.
+Write a SQL query to find the list of products that belong to more than 5 public categories.
+-----------------------------------------------------------
+CREATE TABLE product_product(
+    PRIMARY KEY(id),  
+    name varchar,
+    price float,
+    creationDate datetime,
+);
+CREATE TABLE product_product_product_category_rel(    
+    product_id int,
+    category_id int,
+    CONSTRAINT product_fk FOREIGN KEY(product_id) REFERENCES product_product(id),
+    CONSTRAINT categories FOREIGN KEY(category_id) REFERENCES categories(id)
+);
+CREATE TABLE product_category(
+    id int,
+    name varchar,
+    is_public boolean,
+    PRIMARY KEY(id),
+);
+
+SELECT product.*
+FROM product_product product
+INNER JOIN product_product_product_category_rel rel ON rel.product_id = product.id
+INNER JOIN product_category category ON rel.category_id = category.id
+WHERE category.is_public = True
+GROUP BY product.id
+HAVING count(*) > 5
+
+[juc] 3
+
+Test 6: Any language (1/20)
+Write a program to download the contents of https://www.sap.com/belgique/index.html (the SAP homepage for Belgium), and then save the contents of the page to a new local file, with all occurrences of "SAP" replaced by "Odoo".
+
+--------
+Python:
+    
+import requests
+
+
+scrapUrl = "https://www.sap.com/belgique/index.html"
+response = requests.get(scrapUrl)
+textData = response.content.replace("SAP", "Odoo")  # yes it should be response.text
+with open('ohYouAmbitiousOne.html', 'w') as myFile:
+    myFile.write(textData)
+
+[juc] 0, response.content gives bytes, not text
+
+Test 7: Any language (2/20)
+You have a huge file named "data.bin" that does not fit in memory; code a program that deletes every 7th byte of it. truncate can be used to change its size.
+
+[juc] 0, no answer
+
+Test 8: Regular Expression (2/20)
+Write a regular expression to match strings containing both "Odoo" and "#rules" in any order.
+
+regex = '(.* Odoo.* #rule.* )|(.* #rule.* Odoo.*)'
+
+[juc] 2
+
+Test 9: Javascript (1/20)
+Write a function that, when called, returns an array for which each element is a letter of the alphabet, from "A" to "Z" (exactly once, in order and upper case). Your code cannot contain the character ' (quote), " (double quote) or ` (back quote)
+
+
+--------
+Python:
+    
+def showAlphabet():
+    return [char(x) for x in range(65, 91)]
+    
+// it's a shame i was careless, should be like this:
+showAlphaBet = function(){
+alphaBet = [];
+for(i=65; i<=90; i++){alphaBet.push(String.fromCharCode(i));}
+return alphaBet;
+}
+
+
+
+[juc] 0, Javascript was forced
+
+Test 10: Unix (1/20)
+Write a C program that roughly measures the overhead of a mode switch between the kernel and userspace on a UNIX/Linux system (without using the pthread API). Please indicate the assumptions your rough estimation is based on.
+
+[juc] 0, no answer
